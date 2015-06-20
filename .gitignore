@@ -1,6 +1,7 @@
 # -- Maven
 /target
 /*.versionsBackup
+/dependency-reduced-pom.xml
 
 # -- Eclipse
 /.classpath

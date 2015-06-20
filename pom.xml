@@ -53,7 +53,10 @@
         <maven.gpg.version>1.5</maven.gpg.version>
         <maven.jacoco.version>0.7.2.201409121644</maven.jacoco.version>
         <maven.release.version>2.5.1</maven.release.version>
+        <maven.retrolambda.version>2.0.3</maven.retrolambda.version>
+        <maven.shade.version>2.4</maven.shade.version>
         <maven.versions.version>2.1</maven.versions.version>
+        <mmm-util-backport.version>1.0.1</mmm-util-backport.version>
         <scala.maven.version>3.2.0</scala.maven.version>
         <scala.version>2.11.6</scala.version>
     </properties>
@@ -150,6 +153,49 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>${maven.versions.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.shade.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                    <exclude>org.assertj:assertj-core</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>java.util.function</pattern>
+                                    <shadedPattern>javaslang.util.function</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>net.orfjackal.retrolambda</groupId>
+                <artifactId>retrolambda-maven-plugin</artifactId>
+                <version>${maven.retrolambda.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process-main</goal>
+                            <goal>process-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <defaultMethods>false</defaultMethods>
+                </configuration>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -169,6 +215,12 @@
         </pluginManagement>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>net.sf.m-m-m</groupId>
+            <artifactId>mmm-util-backport-java.util.function</artifactId>
+            <version>${mmm-util-backport.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
